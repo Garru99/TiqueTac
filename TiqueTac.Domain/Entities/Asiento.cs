@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TiqueTac.Domain.Enums;
 
 namespace TiqueTac.Domain.Entities;
 
@@ -41,7 +42,7 @@ public class Asiento
     public bool EstaDisponible()
     {
      return !_reservas.Any(r =>
-            r.Estado == "Pagada" ||
-            (r.Estado == "Pendiente" && r.ExpiracionReserva > DateTime.UtcNow));
+            r.Estado == EstadoReserva.Pagada ||
+            (r.Estado == EstadoReserva.Pendiente && r.ExpiracionReserva > DateTime.UtcNow));
     }
 }

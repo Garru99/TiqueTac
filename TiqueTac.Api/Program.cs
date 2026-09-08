@@ -1,12 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using TiqueTac.Persistence.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// OBTENER LA CADENA DE CONEXIÓN
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
+
+builder.Services.AddDbContext<TiqueTacDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurar el pipeline de peticiones HTTP
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -14,28 +22,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/api/test-db", async (TiqueTacDbContext context) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    try
+    {
+        // Lanza una consulta ultra ligera nativa de Postgres para comprobar que el cable está conectado
+        var canConnect = await context.Database.CanConnectAsync();
+        return canConnect
+            ? Results.Ok(new { Mensaje = "Oleeeee" })
+            : Results.BadRequest(new { Mensaje = "Error al conectar a la base de datos." });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"Error no controlado de base de datos: {ex.Message}");
+    }
+});
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
