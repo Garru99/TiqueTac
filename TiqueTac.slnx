@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="TiqueTac.Api/TiqueTac.Api.csproj" />
+  <Project Path="Tiquetac.Application/Tiquetac.Application.csproj" />
+  <Project Path="TiqueTac.Domain/TiqueTac.Domain.csproj" />
+  <Project Path="TiqueTac.Infraestructure/TiqueTac.Infraestructure.csproj" />
+  <Project Path="TiqueTac.Persistence/TiqueTac.Persistence.csproj" />
+</Solution>
