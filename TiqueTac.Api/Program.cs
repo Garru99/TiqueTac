@@ -26,7 +26,6 @@ app.MapGet("/api/test-db", async (TiqueTacDbContext context) =>
 {
     try
     {
-        // Lanza una consulta ultra ligera nativa de Postgres para comprobar que el cable está conectado
         var canConnect = await context.Database.CanConnectAsync();
         return canConnect
             ? Results.Ok(new { Mensaje = "Oleeeee" })

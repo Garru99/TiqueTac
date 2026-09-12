@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 
 using Microsoft.EntityFrameworkCore;
+using TiqueTac.Application.Common.Interfaces; 
 using TiqueTac.Domain.Entities;
 
 namespace TiqueTac.Persistence.Context;
 
-public class TiqueTacDbContext : DbContext
+public class TiqueTacDbContext : DbContext, ITiqueTacDbContext
 {
     public DbSet<Usuario> Usuarios => Set<Usuario>();
     public DbSet<Evento> Eventos => Set<Evento>();
