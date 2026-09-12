@@ -42,10 +42,13 @@ public class TiqueTacDbContext : DbContext, ITiqueTacDbContext
             entity.Property(e => e.PrecioBase).HasColumnName("preciobase");
         });
 
+        // 3. Mapeo de Asientos
         modelBuilder.Entity<Asiento>(entity =>
         {
             entity.ToTable("dtasientos");
             entity.HasKey(e => e.IdAsiento);
+
+            // Forzamos el nombre exacto de tu columna en Postgres (IdAsiento o idasiento)
             entity.Property(e => e.IdAsiento).HasColumnName("idasiento");
             entity.Property(e => e.IdEvento).HasColumnName("idevento");
             entity.Property(e => e.NumeroAsiento).HasColumnName("numero_asiento").HasMaxLength(20);
@@ -54,7 +57,13 @@ public class TiqueTacDbContext : DbContext, ITiqueTacDbContext
             entity.Property(e => e.Primero)
                   .HasColumnName("primero")
                   .IsConcurrencyToken();
+
+            // CONFIGURACIÓN DE LA RELACIÓN (Toque Senior para evitar nombres automáticos raros)
+            entity.HasMany(a => a.Reservas)
+                  .WithOne(r => r.Asiento)
+                  .HasForeignKey(r => r.IdAsiento);
         });
+
 
         modelBuilder.Entity<Reserva>(entity =>
         {
